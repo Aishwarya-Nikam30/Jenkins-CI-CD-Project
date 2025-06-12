@@ -1,6 +1,12 @@
 pipeline {
   agent any
+  options{
+    timeout(time:30, minutes)
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
   environment {
+    DOCKER_BUILDKIT = "1"
+    DOCKER_CLEANUP = "true"
     DOCKER_HUB = credentials('docker-hub-credentials')  //you will set this up in jenkins
     IMAGE_NAME = 'aisha10/simple-node-app'
     IMAGE_TAG = "${env.BUILD_NUMBER}"
@@ -36,6 +42,9 @@ pipeline {
   }
     post{
       always{
+        script {
+          
+        }
         echo 'Pipeline completed - cleaning up'
         sh 'docker system prune -f'
       }
